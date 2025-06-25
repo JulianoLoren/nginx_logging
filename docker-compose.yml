@@ -1,0 +1,57 @@
+version: '3'
+services:
+  nginx:
+    image: openresty/openresty:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf:ro
+      - ./logs:/var/log/nginx
+    depends_on:
+      - logstash
+    restart: unless-stopped
+
+  logstash:
+    build:
+      context: ./logstash
+      dockerfile: Dockerfile
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logs:/logs
+      - ./logs/jsonl:/logs/jsonl
+    depends_on:
+      - mongodb
+    environment:
+      - XPACK_MONITORING_ENABLED=false
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:4.4
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=example
+    restart: unless-stopped
+
+  s3_uploader:
+    build:
+      context: ./s3_uploader
+      dockerfile: Dockerfile
+    volumes:
+      - ./logs:/logs
+      - ./logs/jsonl:/logs/jsonl
+      - ./logs/s3_markers:/logs/s3_markers
+    environment:
+      - AWS_ACCESS_KEY_ID=your_access_key
+      - AWS_SECRET_ACCESS_KEY=your_secret_key
+      - AWS_REGION=ap-southeast-1
+      - S3_BUCKET=your-s3-bucket-name
+      - S3_PREFIX=nginx-logs
+      - RETRY_INTERVAL=3600
+      - MAX_RETRIES=24
+    restart: unless-stopped
+

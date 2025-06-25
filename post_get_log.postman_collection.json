@@ -1,0 +1,67 @@
+{
+	"info": {
+		"_postman_id": "961780df-cd9b-4646-a69d-6cf29fe076e7",
+		"name": "post_get_log",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1682595"
+	},
+	"item": [
+		{
+			"name": "POST",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "// hello this is post body\n{\n    \"hello\": \"this is json content\",\n    \"nested\": {\n        \"content\": \"what is this\",\n        \"number_field\": 123.4\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "CF-Connecting-IP",
+						"value": "123.16.13.79",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080?abc=this_is_get&xyz=haha",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"query": [
+						{
+							"key": "abc",
+							"value": "this_is_get"
+						},
+						{
+							"key": "xyz",
+							"value": "haha"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
