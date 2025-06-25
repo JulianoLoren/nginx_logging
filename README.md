@@ -44,6 +44,7 @@ Hệ thống này thiết lập môi trường Docker Compose với:
 - Phân tích vị trí địa lý từ IP client sử dụng GeoIP (thành phố, quốc gia, châu lục, tọa độ)
 - Phân tích các tham số truy vấn GET và nội dung JSON của POST
 - Gửi dữ liệu đã xử lý đến MongoDB
+- Lưu trữ log dạng JSONL với tên file theo định dạng `nginx_access_YYYYMMDDHH.jsonl` (rotate theo giờ)
 
 ### MongoDB
 - Lưu trữ dữ liệu log đã được xử lý
@@ -119,4 +120,6 @@ db.access_logs.find({"user_agent": /Chrome/})
    - Đối với GET: Phân tích các tham số truy vấn thành cấu trúc JSON
    - Đối với POST: Phân tích nội dung JSON hoặc lưu trữ dạng raw
 
-5. **Lưu Trữ Linh Hoạt**: Dữ liệu được lưu trong MongoDB cho phép truy vấn và phân tích linh hoạt
+5. **Lưu Trữ Đa Dạng**: 
+   - Lưu trữ trong MongoDB cho phép truy vấn và phân tích linh hoạt
+   - Lưu trữ dạng JSONL với tên file theo giờ (nginx_access_YYYYMMDDHH.jsonl) cho phép phân tích offline và backup dễ dàng

@@ -18,6 +18,7 @@ services:
       - ./logstash/pipeline:/usr/share/logstash/pipeline
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./logs:/logs
+      - ./logs/jsonl:/logs/jsonl
     depends_on:
       - mongodb
     environment:
