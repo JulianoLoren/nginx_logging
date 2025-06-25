@@ -1,0 +1,35 @@
+version: '3'
+services:
+  nginx:
+    image: openresty/openresty:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf:ro
+      - ./logs:/var/log/nginx
+    depends_on:
+      - logstash
+
+  logstash:
+    build:
+      context: ./logstash
+      dockerfile: Dockerfile
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logs:/logs
+    depends_on:
+      - mongodb
+    environment:
+      - XPACK_MONITORING_ENABLED=false
+
+  mongodb:
+    image: mongo:4.4
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=example
+
