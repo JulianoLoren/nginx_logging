@@ -9,6 +9,7 @@ services:
       - ./logs:/var/log/nginx
     depends_on:
       - logstash
+    restart: unless-stopped
 
   logstash:
     build:
@@ -23,6 +24,7 @@ services:
       - mongodb
     environment:
       - XPACK_MONITORING_ENABLED=false
+    restart: unless-stopped
 
   mongodb:
     image: mongo:4.4
@@ -33,4 +35,23 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=example
+    restart: unless-stopped
+
+  s3_uploader:
+    build:
+      context: ./s3_uploader
+      dockerfile: Dockerfile
+    volumes:
+      - ./logs:/logs
+      - ./logs/jsonl:/logs/jsonl
+      - ./logs/s3_markers:/logs/s3_markers
+    environment:
+      - AWS_ACCESS_KEY_ID=your_access_key
+      - AWS_SECRET_ACCESS_KEY=your_secret_key
+      - AWS_REGION=ap-southeast-1
+      - S3_BUCKET=your-s3-bucket-name
+      - S3_PREFIX=nginx-logs
+      - RETRY_INTERVAL=3600
+      - MAX_RETRIES=24
+    restart: unless-stopped
 
